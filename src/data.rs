@@ -1,3 +1,10 @@
+#[derive(Debug)]
+pub struct ClusterMerge {
+    pub(crate) cluster1: usize,
+    pub(crate) cluster2: usize,
+    pub(crate) distance: f64,
+}
+
 #[derive(Debug, Clone)]
 pub struct Object {
     pub id: usize,
