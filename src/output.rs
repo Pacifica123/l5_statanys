@@ -87,6 +87,20 @@ pub fn format_clusters(clusters: &[Vec<Object>]) -> String {
     }
 }
 
+// Форматирование кластеров для вывода
+pub fn format_clusters_full(clusters: &[Vec<Object>]) -> String {
+    let cluster_strings: Vec<String> = clusters
+        .iter()
+        .enumerate()
+        .map(|(i, cluster)| {
+            let ids: Vec<usize> = cluster.iter().map(|obj| obj.id).collect();
+            format!("[{}]: {:?}", i + 1, ids) // Используем {:?} для вывода всех ID
+        })
+        .collect();
+
+    cluster_strings.join(" | ") // Возвращаем все кластеры без сокращений
+}
+
 // Форматирование длинных списков (внутри кластеров)
 fn format_large_list(ids: &[usize]) -> String {
     if ids.len() > 10 {

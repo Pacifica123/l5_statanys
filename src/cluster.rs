@@ -1,4 +1,6 @@
-use crate::{data::{ClusterMerge, Object}, distance::{calculate_cluster_distance, calculate_distance}, output::format_clusters};
+use crate::{data::{ClusterMerge, Object}, distance::{calculate_cluster_distance, calculate_distance}, output::{format_clusters, format_clusters_full}};
+use std::fs::OpenOptions;
+use std::io::Write;
 
 
 // Центр кластера (геометрическое среднее)
@@ -49,8 +51,11 @@ pub fn  hierarchical_clustering(data: Vec<Object>) {
 }
 
 // Предварительное вычисление расстояний
-pub fn hierarchical_clustering_optimized(data: Vec<Object>) {
+pub fn hierarchical_clustering_optimized(data: &Vec<Object>) {
+    let data = data.clone();
     let n = data.len();
+    let mut iteration: i32 = 0;
+    
     let mut clusters: Vec<Vec<Object>> = data.into_iter().map(|obj| vec![obj]).collect();
     let mut distances = vec![vec![0.0; n]; n];
 
@@ -61,6 +66,14 @@ pub fn hierarchical_clustering_optimized(data: Vec<Object>) {
             distances[j][i] = distances[i][j];
         }
     }
+
+    // Открытие файла для записи
+    let mut file = OpenOptions::new()
+        .create(true)
+        .write(true)
+        .append(true)
+        .open("clusters.txt")
+        .unwrap();
 
     while clusters.len() > 1 {
         // Найти минимальное расстояние
@@ -85,6 +98,30 @@ pub fn hierarchical_clustering_optimized(data: Vec<Object>) {
             distances[merge_indices.0][i] = calculate_cluster_distance(&clusters[merge_indices.0], &clusters[i]);
             distances[i][merge_indices.0] = distances[merge_indices.0][i];
         }
+
+
+        // Форматирование идентификаторов объектов для вывода
+        let cluster_ids: Vec<String> = clusters.iter()
+            .enumerate()
+            .map(|(i, cluster)| {
+                let ids: Vec<usize> = cluster.iter().map(|obj| obj.id).collect();
+                format!("[{}]: {:?}", i + 1, ids) // Форматируем идентификаторы
+            })
+            .collect();
+
+        // Запись информации в файл с идентификаторами объектов
+        writeln!(file, "Шаг {}: Расстояние (min) = {:.6} | Кластеры: {}", iteration, min_distance, cluster_ids.join(" | ")).unwrap();
+        // // Вывод информации
+        // if iteration%1 == 0
+        // { println!(
+        //         "Шаг {}: Расстояние (min) = {:.6} | Кластеры: {}",
+        //         iteration,
+        //         min_distance,
+        //         format_clusters(&clusters)
+        //     );}
+        // // Запись информации в файл
+        // writeln!(file, "Шаг {}: Расстояние (min) = {:.6} | Кластеры: {}", iteration, min_distance, format_clusters_full(&clusters)).unwrap();
+        iteration += 1;
     }
 }
 

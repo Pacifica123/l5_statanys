@@ -24,14 +24,14 @@ fn main() {
             output::output_dataset(&normalized_dataset, "normalized_dataset.csv")
                 .unwrap_or_else(|e| println!("Ошибка при выводе данных: {}", e));
 
-            // Матрица расстояний
+            // Матрица расстояний           
             let distance_matrix = build_distance_matrix(&normalized_dataset.objects);
             output::output_distance_matrix(&distance_matrix, "distance_matrix.csv")
                 .unwrap_or_else(|e| println!("Ошибка при выводе матрицы расстояний: {}", e));
 
             // Иерархическая кластеризация
             // hierarchical_clustering(normalized_dataset.objects);
-            // hierarchical_clustering_optimized(normalized_dataset.objects);
+            hierarchical_clustering_optimized(&normalized_dataset.objects);
             let clusters = hierarchical_clustering_with_trace(normalized_dataset.objects);
 
             plot_dendrogram(&clusters);
@@ -52,8 +52,8 @@ fn main() {
                     cluster2: 5,
                     distance: 1.4,
                 },
-            ];
-            plot_dendrogram_to_png(&trace_test, "final.png");
+            ];              
+            // plot_dendrogram_to_png(&clusters, "final.png");
         }
         Err(err) => {
             println!("Ошибка при обработке CSV-файла: {}", err);

@@ -19,7 +19,7 @@ pub fn parse_csv(
     let mut numeric_headers = vec![false; headers.len()]; // Массив для отслеживания числовых заголовков
 
     let mut total_cells = 0; // Общее количество ячеек
-    const MAX_CELLS: usize = 1_000; // Максимальное количество ячеек
+    const MAX_CELLS: usize = 800; // Максимальное количество ячеек
 
     for (id, record) in reader.records().enumerate() {
         let record = record?;
