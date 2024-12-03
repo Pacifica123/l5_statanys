@@ -13,7 +13,7 @@ use cluster::{hierarchical_clustering, hierarchical_clustering_optimized, hierar
 
 fn main() {
     // Пример данных
-    match parse_csv("diamonds.csv", b',') {
+    match parse_csv("newdata.csv", b',') {
         Ok(dataset) => {
             println!("Набор данных успешно загружен и обработан:");
             output::output_dataset(&dataset, "filtered.csv")
